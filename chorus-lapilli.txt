@@ -1,0 +1,9 @@
+Starting from completed tic-tac-toe.
+
+Dropped the Game wrapper and the history for traveling between moves/steps since they aren't needed for chorus lapilli.
+Flattening the state into Board makes it easier to implement the moving of your pieces.
+
+Went from 3 components (Game, Board, Square) to 2 components (Board and Square).
+Board now owns squares and xIsNext via useState. Removed the <ol> move list. 
+
+Verified this step in chrome
