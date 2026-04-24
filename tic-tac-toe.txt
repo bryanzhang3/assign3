@@ -1,0 +1,11 @@
+Forked and cloned the main repo
+Ran ./helper init and ./helper dev with server at localhost:5173
+Planned to replace src/App.jsx starter code with the proper tic-tac-toe code in the tutorial.
+Read through the React tutorial and learned the flow of the code.
+Rewrote src/App.jsx with three components like the tutorial:
+- Square(value, onSquareClick): presentational <button>
+- Board(xIsNext, squares, onPlay): renders 3x3 board. handleClick(i) short-circuits if there's already a winner or the square is taken. Otherwise copies squares, writes 'X' or 'O', and calls onPlay.
+- Game (default export): owns history (array of snapshots) and currentMove. Derives xIsNext from currentMove % 2. handlePlay truncates history beyond
+currentMove before appending, so jumping back and playing forward drops the old future.
+calculateWinner is a plain function outside the components that checks all winning lines.
+Manually verified all features worked as planned in Chrome. 
