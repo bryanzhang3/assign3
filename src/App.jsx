@@ -26,18 +26,30 @@ export default function Board() {
   const [squares, setSquares] = useState(Array(9).fill(null));
   const [xIsNext, setXIsNext] = useState(true);
 
+  const winner = calculateWinner(squares);
+  const currentPlayer = xIsNext ? 'X' : 'O';
+  const currentPlayerCount = squares.filter((s) => s === currentPlayer).length;
+
   function handleClick(i) {
-    if (calculateWinner(squares) || squares[i]) return;
-    const next = squares.slice();
-    next[i] = xIsNext ? 'X' : 'O';
-    setSquares(next);
-    setXIsNext(!xIsNext);
+    if (winner) return;
+
+    // Placement phase: only while current player has fewer than 3 pieces
+    if (currentPlayerCount < 3) {
+      if (squares[i] !== null) return;
+      const next = squares.slice();
+      next[i] = currentPlayer;
+      setSquares(next);
+      setXIsNext(!xIsNext);
+      return;
+    }
+
+    // Movement phase: not implemented yet — clicks do nothing
+    return;
   }
 
-  const winner = calculateWinner(squares);
   const status = winner
     ? 'Winner: ' + winner
-    : 'Next player: ' + (xIsNext ? 'X' : 'O');
+    : 'Next player: ' + currentPlayer;
 
   return (
     <>

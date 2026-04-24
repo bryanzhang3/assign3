@@ -6,4 +6,10 @@ Flattening the state into Board makes it easier to implement the moving of your 
 Went from 3 components (Game, Board, Square) to 2 components (Board and Square).
 Board now owns squares and xIsNext via useState. Removed the <ol> move list. 
 
-Verified this step in chrome
+Verified this part in chrome
+
+Next added a placement cap by deriving 'currentPlayerCount' from squares on each render.
+handleClick now has two branches: if the current player has < 3 pieces, behave like tic-tac-toe placement.
+Else do nothing for now, movement is coming next. 
+
+Verified in chrome.
