@@ -1,8 +1,9 @@
 import { useState } from 'react';
 
-function Square({ value, onSquareClick }) {
+function Square({ value, onSquareClick, highlighted }) {
+  const className = 'square' + (highlighted ? ' highlighted' : '');
   return (
-    <button className="square" onClick={onSquareClick}>
+    <button className={className} onClick={onSquareClick}>
       {value}
     </button>
   );
@@ -22,9 +23,17 @@ function calculateWinner(squares) {
   return null;
 }
 
+function isAdjacent(a, b) {
+  if (a === b) return false;
+  const ar = Math.floor(a / 3), ac = a % 3;
+  const br = Math.floor(b / 3), bc = b % 3;
+  return Math.abs(ar - br) <= 1 && Math.abs(ac - bc) <= 1;
+}
+
 export default function Board() {
   const [squares, setSquares] = useState(Array(9).fill(null));
   const [xIsNext, setXIsNext] = useState(true);
+  const [selected, setSelected] = useState(null);
 
   const winner = calculateWinner(squares);
   const currentPlayer = xIsNext ? 'X' : 'O';
@@ -33,18 +42,35 @@ export default function Board() {
   function handleClick(i) {
     if (winner) return;
 
-    // Placement phase: only while current player has fewer than 3 pieces
+    // Placement phase
     if (currentPlayerCount < 3) {
       if (squares[i] !== null) return;
       const next = squares.slice();
       next[i] = currentPlayer;
       setSquares(next);
       setXIsNext(!xIsNext);
+      setSelected(null);
       return;
     }
 
-    // Movement phase: not implemented yet — clicks do nothing
-    return;
+    // Movement phase — first click: select one of your own pieces
+    if (selected === null) {
+      if (squares[i] === currentPlayer) setSelected(i);
+      return;
+    }
+
+    // Movement phase — second click: must be an empty adjacent square
+    if (squares[i] !== null || !isAdjacent(selected, i)) {
+      setSelected(null);
+      return;
+    }
+
+    const next = squares.slice();
+    next[selected] = null;
+    next[i] = currentPlayer;
+    setSquares(next);
+    setXIsNext(!xIsNext);
+    setSelected(null);
   }
 
   const status = winner
@@ -54,21 +80,21 @@ export default function Board() {
   return (
     <>
       <div className="status">{status}</div>
-      <div className="board-row">
-        <Square value={squares[0]} onSquareClick={() => handleClick(0)} />
-        <Square value={squares[1]} onSquareClick={() => handleClick(1)} />
-        <Square value={squares[2]} onSquareClick={() => handleClick(2)} />
-      </div>
-      <div className="board-row">
-        <Square value={squares[3]} onSquareClick={() => handleClick(3)} />
-        <Square value={squares[4]} onSquareClick={() => handleClick(4)} />
-        <Square value={squares[5]} onSquareClick={() => handleClick(5)} />
-      </div>
-      <div className="board-row">
-        <Square value={squares[6]} onSquareClick={() => handleClick(6)} />
-        <Square value={squares[7]} onSquareClick={() => handleClick(7)} />
-        <Square value={squares[8]} onSquareClick={() => handleClick(8)} />
-      </div>
+      {[0, 3, 6].map((rowStart) => (
+        <div key={rowStart} className="board-row">
+          {[0, 1, 2].map((col) => {
+            const i = rowStart + col;
+            return (
+              <Square
+                key={i}
+                value={squares[i]}
+                onSquareClick={() => handleClick(i)}
+                highlighted={selected === i}
+              />
+            );
+          })}
+        </div>
+      ))}
     </>
   );
 }

@@ -13,3 +13,14 @@ handleClick now has two branches: if the current player has < 3 pieces, behave l
 Else do nothing for now, movement is coming next. 
 
 Verified in chrome.
+
+Next implemented the two-click movement
+Added isAdjacent(a, b) which turns linear indices to (row, col) and returns true when two squares are adjacent when their row and column indices each differ by at most 1 (and they aren't the same square).
+Added a third piece of state, `selected`, holding the index of a picked-up piece or null. handleClick branches on phase:
+- Placement (< 3 own pieces): same as tic-tac-toe placement.
+- Movement, nothing selected: click must be one of your own pieces to become the selection; anything else ignored.
+- Movement, something selected: destination must be empty AND adjacent to `selected`; otherwise reset selection to null to meet spec requirements.
+
+Square now takes `highlighted` prop that adds CSS class that highlights the picked up piece. Added a `.square.highlighted` rule in index.css just for developing purposes, so I can see code working better. 
+
+Verified in chrome.
