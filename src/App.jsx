@@ -53,13 +53,13 @@ export default function Board() {
       return;
     }
 
-    // Movement phase — first click: select one of your own pieces
+    // Movement phase for first click: select one of your own pieces
     if (selected === null) {
       if (squares[i] === currentPlayer) setSelected(i);
       return;
     }
 
-    // Movement phase — second click: must be an empty adjacent square
+    // Movement phase for second click: must be an empty adjacent square
     if (squares[i] !== null || !isAdjacent(selected, i)) {
       setSelected(null);
       return;
@@ -68,6 +68,15 @@ export default function Board() {
     const next = squares.slice();
     next[selected] = null;
     next[i] = currentPlayer;
+
+    // Center rule: if the current player holds the center and isn't moving that center piece, the move must produce a win.
+    if (squares[4] === currentPlayer && selected !== 4) {
+      if (calculateWinner(next) !== currentPlayer) {
+        setSelected(null);
+        return;
+      }
+    }
+    
     setSquares(next);
     setXIsNext(!xIsNext);
     setSelected(null);
